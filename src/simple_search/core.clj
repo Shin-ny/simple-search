@@ -45,16 +45,23 @@
 
 (defn score
   "Takes the total-weight of the given answer unless it's over capacity,
-   in which case we return 0."
+  in which case we return 0."
   [answer]
   (if (> (:total-weight answer)
          (:capacity (:instance answer)))
     0
     (:total-value answer)))
 
+(defn heavy-score
+  [answer]
+  (if (> (:total-weight answer)
+         (:capacity (:instance answer)))
+    0
+    (* (:total-value answer) (:total-value answer))))
+
 (defn penalized-score
   "Takes the total-weight of the given answer unless it's over capacity,
-   in which case we return the negative of the total weight."
+  in which case we return the negative of the total weight."
   [answer]
   (if (> (:total-weight answer)
          (:capacity (:instance answer)))
@@ -84,7 +91,7 @@
 
 (defn add-score
   "Computes the score of an answer and inserts a new :score field
-   to the given answer, returning the augmented answer."
+  to the given answer, returning the augmented answer."
   [scorer answer]
   (assoc answer :score (scorer answer)))
 
@@ -114,12 +121,14 @@
   (loop [current-best (add-score scorer (random-answer instance))
          num-tries 1]
     (let [new-answer (add-score scorer (mutator current-best))]
-      (if (>= num-tries max-tries)
-        current-best
-        (if (> (:score new-answer)
-               (:score current-best))
-          (recur new-answer (inc num-tries))
-          (recur current-best (inc num-tries)))))))
+      (if (= (mod num-tries 200) 0)
+        (random-search scorer instance 201)
+        (if (>= num-tries max-tries)
+          current-best
+          (if (> (:score new-answer)
+                 (:score current-best))
+            (recur new-answer (inc num-tries))
+            (recur current-best (inc num-tries))))))))
 
 ; (time (random-search score knapPI_16_200_1000_1 100000
 ; ))
