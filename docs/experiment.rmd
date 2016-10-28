@@ -1,0 +1,22 @@
+---
+title: "experiment.rmd"
+output: html_document
+---
+
+The original plot:
+```{r}
+raw_data <- read.csv("../data/output.txt", sep="")
+
+plot(raw_data$Score ~ raw_data$Search_method,
+     xlab="Searcher", ylab="Score")
+```
+
+
+The plot with all negative values convert to 0:
+```{r}
+raw_data <- read.csv("../data/output.txt", sep="")
+
+raw_data$Non_negative_score = ifelse(raw_data$Score<0, 0, raw_data$Score)
+plot(raw_data$Non_negative_score ~ raw_data$Search_method,
+     xlab="Searcher", ylab="Score")
+```
