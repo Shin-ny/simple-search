@@ -105,7 +105,7 @@
 
 (defn mutate-choices
   [choices]
-  (let [mutation-rate (/ 1 (count choices))]
+  (let [mutation-rate (/ 10 (count choices))]
     (map #(if (< (rand) mutation-rate) (- 1 %) %) choices)))
 
 (defn mutate-answer
@@ -121,8 +121,20 @@
   (loop [current-best (add-score scorer (random-answer instance))
          num-tries 1]
     (let [new-answer (add-score scorer (mutator current-best))]
+      (if (>= num-tries max-tries)
+        current-best
+        (if (> (:score new-answer)
+               (:score current-best))
+          (recur new-answer (inc num-tries))
+(recur current-best (inc num-tries)))))))
+
+(defn hill-climber-with-new-start
+  [mutator scorer instance max-tries]
+  (loop [current-best (add-score scorer (random-answer instance))
+         num-tries 1]
+    (let [new-answer (add-score scorer (mutator current-best))]
       (if (= (mod num-tries 200) 0)
-        (random-search scorer instance 201)
+        (random-search scorer instance (+ (rand-int (- (- max-tries num-tries) 0)) 100))
         (if (>= num-tries max-tries)
           current-best
           (if (> (:score new-answer)
