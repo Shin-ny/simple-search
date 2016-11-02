@@ -1,0 +1,59 @@
+---
+title: "Knapsack experiments write-up"
+author: "Ben Sixel & Shinny Hu"
+date: "November 2, 2016"
+output: 
+  html_document:
+    toc: true
+---
+
+
+# Introduction
+
+Our sample data is a compilation of 10 files, each containing the results of running the knapsack experiment 50 times with the maximum number of tries set to 20000. In addition to the default `hill_climber _cliff_score`, `hille_climber_penalized_score`, and `random_search` methods of evolution, we implemented a `hill_climber_with_random_restarts` method which using hill climbing for a random length of tries and then switches to `random_search` for an again random number of tries. If the result of the random search is better than the previously existing best score, we begin mutating the new best score provided by the random search. Of course this will not always result in a superior score, in which case the random search result is ignored and we continue mutating the previously chosen best score. Our hope was that this new approach would result in a slight increase in better scores, although becaus of the law of averages we were expecting the results to be very similar to `hill_climber_penalized_score`. We continued to use an unchanged mutate_answer function in order to preserve the previously collected data.
+
+# Experimental setup
+
+We applied each combination of these 4 searchers to fairly randomly chosen knapsack problems:
+
+* `knapPI_11_20_1000_4`
+* `knapPI_13_20_1000_4` 
+* `knapPI_16_20_1000_4`
+* `knapPI_11_200_1000_4`
+* `knapPI_13_200_1000_4`
+* `knapPI_16_200_1000_4`
+
+(These names are abbreviated to, e.g., `k_11_20_4`, in diagrams below.) Half of these are 20 item problems, and half are 200 item problems. Ultimately we'll probably want to apply our techniques to larger problems, but our goal here was to try to understand the differences between our four search techniques, so I really just wanted hard enough problems to expose those differences.
+
+I did 50 indepedent runs of each treatment on each problem, for a total of
+
+$$4 \times 1 \times 6 \times 50 = 1200 \textrm{ runs}$$
+
+# Results
+
+## A basic comparison of the searchers
+
+As we can see in the plot below, the hill-climber with penalized fitness and our new method of random restarts with penalized fitness both perform nearly the same.
+
+```{r}
+data_50_runs_1 <- read.csv("../data/final_output.txt", sep="")
+
+plot(data_50_runs_1$Score ~ data_50_runs_1$Search_method,
+     xlab="Searcher", ylab="Score")
+```
+
+While random search certainly has a greater volume of positive results, the medians of both random search and hilll climber cliff score are very close to zero and we can safely say they're both terrible.
+
+## How do things change by problem?
+Because the number of max tries is a static value in our experiment, the only change within a single search method is the problem being solved. 
+
+```{r}
+plot(data_50_runs_1$Score ~ data_50_runs_1$Problem,
+     xlab="Searcher", ylab="Score")
+```
+
+## Recursive partitioning
+
+
+# Conclusions
+

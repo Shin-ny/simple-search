@@ -103,9 +103,14 @@
 
 ; (random-search penalized-score knapPI_16_200_1000_1 10000)
 
-(defn mutate-choices
+(defn mutate-choices-weird
   [choices]
   (let [mutation-rate (/ (* (count choices) 2) (count choices))]
+    (map #(if (< (rand) mutation-rate) (- 1 %) %) choices)))
+
+(defn mutate-choices
+  [choices]
+  (let [mutation-rate (/ 1 (count choices))]
     (map #(if (< (rand) mutation-rate) (- 1 %) %) choices)))
 
 (defn mutate-answer
@@ -126,16 +131,21 @@
         (if (> (:score new-answer)
                (:score current-best))
           (recur new-answer (inc num-tries))
-(recur current-best (inc num-tries)))))))
+          (recur current-best (inc num-tries)))))))
 
 (defn hill-climber-with-new-start
-[mutator scorer instance max-tries]
+  [mutator scorer instance max-tries]
   (loop [current-best (add-score scorer (random-answer instance))
          num-tries 1]
     (let [new-answer (add-score scorer (mutator current-best))]
       (if (= (mod num-tries (/ max-tries 5)) 0)
-       ;(random-search scorer instance (+ (rand-int (- (- max-tries num-tries) 0)) 100))
-        (random-search scorer instance (+ (rand-int 100) 1))
+        (let [num-random-tries (+ (rand-int 10) 1)
+              ;rsr (random-search scorer instance (+ (rand-int (- (- max-tries num-tries) 0)) 100))
+              rsr (random-search scorer instance num-random-tries)]
+          (if (> (:score rsr)
+                 (:score current-best))
+            (recur rsr (+ num-tries num-random-tries))
+            (recur current-best (+ num-tries num-random-tries))))
         (if (>= num-tries max-tries)
           current-best
           (if (> (:score new-answer)
