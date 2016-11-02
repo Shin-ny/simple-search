@@ -52,6 +52,8 @@ plot(data_50_runs_1$Score ~ data_50_runs_1$Problem,
      xlab="Searcher", ylab="Score")
 ```
 
+The above plot clearly suggests that those problems with 200 items perform much better than those with only 20 items. That being said, the 200 item problems all have a wider range of distribution
+
 ## Recursive partitioning
 
 
