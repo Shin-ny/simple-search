@@ -3,7 +3,7 @@ title: "Knapsack experiments sample write-up"
 author: "Nic McPhee"
 date: "February 18, 2016"
 output: 
-  html_document:
+  pdf_document:
     toc: true
 ---
 

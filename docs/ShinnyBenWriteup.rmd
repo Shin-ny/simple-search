@@ -3,7 +3,7 @@ title: "Knapsack experiments write-up"
 author: "Ben Sixel & Shinny Hu"
 date: "November 2, 2016"
 output: 
-  html_document:
+  pdf_document:
     toc: true
 ---
 
@@ -23,9 +23,9 @@ We applied each combination of these 4 searchers to fairly randomly chosen knaps
 * `knapPI_13_200_1000_4`
 * `knapPI_16_200_1000_4`
 
-(These names are abbreviated to, e.g., `k_11_20_4`, in diagrams below.) Half of these are 20 item problems, and half are 200 item problems. Ultimately we'll probably want to apply our techniques to larger problems, but our goal here was to try to understand the differences between our four search techniques, so I really just wanted hard enough problems to expose those differences.
+(These names are abbreviated to, e.g., `k_11_20_4`, in diagrams below.) Half of these are 20 item problems, and half are 200 item problems. Ultimately we'll probably want to apply our techniques to larger problems, but our goal here was to try to understand the differences between our four search techniques, so We really just wanted hard enough problems to expose those differences.
 
-I did 50 indepedent runs of each treatment on each problem, for a total of
+We did 50 indepedent runs of each treatment on each problem, for a total of
 
 $$4 \times 1 \times 6 \times 50 = 1200 \textrm{ runs}$$
 
@@ -52,10 +52,9 @@ plot(data_50_runs_1$Score ~ data_50_runs_1$Problem,
      xlab="Searcher", ylab="Score")
 ```
 
-The above plot clearly suggests that those problems with 200 items perform much better than those with only 20 items. That being said, the 200 item problems all have a wider range of distribution
-
-## Recursive partitioning
+The above plot clearly suggests that those problems with 200 items perform much better than those with only 20 items. That being said, the 200 item problems all have a wider range of distribution. In the first plot, we could easily see that there was little to no difference in the success of our new implementation of penalized hill climbing vs. the original penalized hill climbing. When taking that into account while observing this second plot, it becomes obvious that the only relevant difference in performance is when changing the number of items in a problem.
 
 
 # Conclusions
-
+As pointed out before, we have found that our randomly starting random search has little to no effect on the use of hill climbing. In fact, if we were to take an even larger set of data, we would likely find that the outliers between both the normal penalized hill climber and our own have the same distribution. Comparing our results to the given sample results of hill climber, it becomes fairly obvious (and entirely unsurprisingly so) that increasing the number of maximum tries naturally increases the successfulness of hill climbing - both our own and the default implementation. Interestingly, we did not encounter hardly any negative/"illegal" scores - it is unclear whether we simply got lucky with the random number generator or if the number of max tries simply made that data completely negligible.
+In conclusion, we found that using random generation is completely not worthwhile if you actually care about higher scores. You're better off simply increasing the number of maximum tries.
