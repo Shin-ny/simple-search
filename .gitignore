@@ -12,3 +12,5 @@ pom.xml.asc
 .nrepl-port
 .Rhistory
 docs/*.html
+
+.DS_Store
